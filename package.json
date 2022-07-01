@@ -1,0 +1,64 @@
+{
+  "name": "@mo36924/s3-fetch",
+  "version": "1.0.1",
+  "description": "",
+  "keywords": [],
+  "homepage": "https://github.com/mo36924/s3-fetch#readme",
+  "bugs": {
+    "url": "https://github.com/mo36924/s3-fetch/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mo36924/s3-fetch.git"
+  },
+  "license": "MIT",
+  "author": "mo36924",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js",
+      "default": "./dist/index.js"
+    }
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "run-s clean lint format build:*",
+    "build:rollup": "rollup -c --configPlugin typescript",
+    "clean": "del dist",
+    "lint": "eslint --ext .ts --fix .",
+    "format": "run-s format:*",
+    "format:sort-package-json": "sort-package-json",
+    "format:prettier": "prettier --write .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "prettier": {
+    "htmlWhitespaceSensitivity": "ignore",
+    "printWidth": 120,
+    "trailingComma": "all"
+  },
+  "eslintConfig": {
+    "extends": [
+      "@mo36924/eslint-config"
+    ]
+  },
+  "devDependencies": {
+    "@mo36924/eslint-config": "^2.0.2",
+    "@rollup/plugin-typescript": "^8.3.3",
+    "del-cli": "^4.0.1",
+    "eslint": "^8.18.0",
+    "npm-run-all": "^4.1.5",
+    "prettier": "^2.7.1",
+    "rollup": "^2.75.7",
+    "rollup-plugin-dts": "^4.2.2",
+    "sort-package-json": "^1.57.0",
+    "typescript": "^4.7.4"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
