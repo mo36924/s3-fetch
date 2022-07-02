@@ -84,7 +84,19 @@ export default ({
       if (headers.has("x-amz-content-sha256")) {
         hashedPayload = headers.get("x-amz-content-sha256")!;
       } else {
-        hashedPayload = "UNSIGNED-PAYLOAD";
+        let body = init.body;
+
+        if (typeof body === "string") {
+          body = init.body = encoder.encode(body);
+          hashedPayload = hex(await hash(body));
+          headers.set("Content-Length", body.byteLength.toString());
+        } else if (body && "byteLength" in body) {
+          hashedPayload = hex(await hash(body));
+          headers.set("Content-Length", body.byteLength.toString());
+        } else {
+          hashedPayload = "UNSIGNED-PAYLOAD";
+        }
+
         headers.set("x-amz-content-sha256", hashedPayload);
       }
 
