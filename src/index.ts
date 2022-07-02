@@ -76,7 +76,7 @@ export default ({
 
     if (!headers.has("Authorization")) {
       // https://docs.aws.amazon.com/AmazonS3/latest/API/sig-v4-header-based-auth.html
-      const { host, pathname } = input;
+      const { host, pathname, searchParams } = input;
       const method = init.method ?? "GET";
 
       let hashedPayload: string;
@@ -109,6 +109,22 @@ export default ({
 
       const canonicalURI = encode(pathname);
 
+      const seenKeys = new Set<string>();
+
+      const canonicalQueryString = [...searchParams]
+        .filter(([k]) => {
+          if (!k || seenKeys.has(k)) {
+            return false;
+          }
+
+          seenKeys.add(k);
+          return true;
+        })
+        .map((pair) => pair.map((p) => encode(encodeURIComponent(p))))
+        .sort(([k1], [k2]) => (k1 < k2 ? -1 : k1 > k2 ? 1 : 0))
+        .map((pair) => pair.join("="))
+        .join("&");
+
       const signableHeaders = ["host", ...headers.keys()]
         .filter((header) => !unsignableHeaders.includes(header))
         .sort();
@@ -118,7 +134,7 @@ export default ({
         .join("");
 
       const signedHeaders = signableHeaders.join(";");
-      const canonicalRequest = `${method}\n${canonicalURI}\n\n${canonicalHeaders}\n${signedHeaders}\n${hashedPayload}`;
+      const canonicalRequest = `${method}\n${canonicalURI}\n${canonicalQueryString}\n${canonicalHeaders}\n${signedHeaders}\n${hashedPayload}`;
       const date = timeStamp.slice(0, 8);
       const scope = `${date}/${region}/s3/aws4_request`;
 
