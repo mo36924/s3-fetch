@@ -150,6 +150,18 @@ export default ({
       );
     }
 
+    for (let i = 0; i <= 10; i++) {
+      try {
+        const res = await fetch(input, init);
+
+        if (res.status < 500 && res.status !== 429) {
+          return res;
+        }
+      } catch {}
+
+      await new Promise((resolve) => setTimeout(resolve, Math.random() * 50 * Math.pow(2, i)));
+    }
+
     return fetch(input, init);
   };
 };
