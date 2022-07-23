@@ -39,7 +39,7 @@ export default ({
   region = endpoint.split(".")[1],
   secure = true,
   pathStyle = false,
-  prefix = "/",
+  prefix = "",
 }: {
   accessKeyId: string;
   secretAccessKey: string;
@@ -51,7 +51,7 @@ export default ({
   prefix?: string;
 }) => {
   const base = new URL(
-    `http${secure ? "s" : ""}://${pathStyle ? `${endpoint}/${bucket}` : `${bucket}.${endpoint}`}${prefix}`,
+    `http${secure ? "s" : ""}://${pathStyle ? `${endpoint}/${bucket}` : `${bucket}.${endpoint}`}${prefix}/`,
   );
 
   let cacheDate: string;
