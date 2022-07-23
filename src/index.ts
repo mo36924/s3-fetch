@@ -39,6 +39,7 @@ export default ({
   region = endpoint.split(".")[1],
   secure = true,
   pathStyle = false,
+  prefix = "/",
 }: {
   accessKeyId: string;
   secretAccessKey: string;
@@ -47,8 +48,12 @@ export default ({
   region?: string;
   secure?: boolean;
   pathStyle?: boolean;
+  prefix?: string;
 }) => {
-  const base = new URL(`http${secure ? "s" : ""}://${pathStyle ? `${endpoint}/${bucket}` : `${bucket}.${endpoint}`}/`);
+  const base = new URL(
+    `http${secure ? "s" : ""}://${pathStyle ? `${endpoint}/${bucket}` : `${bucket}.${endpoint}`}${prefix}`,
+  );
+
   let cacheDate: string;
   let promiseSigningKey: Promise<ArrayBuffer>;
 
@@ -70,7 +75,7 @@ export default ({
 
   return async (input: URL | RequestInfo, init: RequestInit = {}) => {
     if (typeof input === "string") {
-      input = new URL(pathStyle ? `.${input}` : input, base);
+      input = new URL(`.${input}`, base);
     } else if (input instanceof Request) {
       const { method, url, headers, body } = input;
       init = { method, headers, body, ...init };
